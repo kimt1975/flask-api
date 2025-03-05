@@ -31,10 +31,24 @@ rights_database = [
 
 @app.route('/sponsorships', methods=['GET'])
 def get_sponsorships():
-    try:
-        return jsonify(rights_database)  # Flask's indbyggede JSON-metode
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500  # Returnér detaljeret fejlhåndtering
+    # Hent søgeparametre fra URL
+    values_query = request.args.get("values")
+    audience_query = request.args.get("audience")
+
+    # Konverter til liste (hvis bruger har angivet flere værdier, fx "innovation, bæredygtighed")
+    values_filter = values_query.split(",") if values_query else []
+    audience_filter = audience_query.split(",") if audience_query else []
+
+    # Filtrer databasen
+    filtered_sponsorships = [
+        sponsorship for sponsorship in rights_database
+        if (not values_filter or any(value in sponsorship["values"] for value in values_filter))
+        and (not audience_filter or any(aud in sponsorship["audience"] for aud in audience_filter))
+    ]
+
+    # Returnér filtrerede resultater
+    return jsonify(filtered_sponsorships)
+
 
 import os
 
