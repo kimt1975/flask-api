@@ -3,12 +3,31 @@ import json
 
 app = Flask(__name__)
 
-# Dummy-database med sponsorrettigheder
-sponsorships = [
+rights_database = [
+    # Fodboldklubber
     {"name": "FC København", "values": "Tradition, konkurrence, internationalt udsyn", "audience": "Fodboldfans", "activation": "TV-eksponering"},
+    {"name": "Brøndby IF", "values": "Passion, fællesskab, dedikation", "audience": "Fodboldfans", "activation": "Stadionbranding"},
+    {"name": "Aalborg BK", "values": "Historie, udvikling, talentfokus", "audience": "Fodboldfans", "activation": "Lokale sponsoraktiviteter"},
+    {"name": "FC Nordsjælland", "values": "Innovation, ungdomsudvikling, bæredygtighed", "audience": "Unge, familier", "activation": "CSR-samarbejde"},
+    
+    # Håndboldklubber
+    {"name": "Aalborg Håndbold", "values": "Vindervilje, konkurrence, international ambition", "audience": "Håndboldfans", "activation": "Arena branding"},
+    {"name": "GOG", "values": "Ungdomsudvikling, fællesskab, engagement", "audience": "Børnefamilier, lokale sportsfans", "activation": "Lokale events"},
+    
+    # Festivaler & Kultur
     {"name": "Roskilde Festival", "values": "Kreativitet, fællesskab, bæredygtighed", "audience": "Musikelskere", "activation": "Live events"},
-    {"name": "Aalborg Håndbold", "values": "Vindervilje, konkurrence, international ambition", "audience": "Håndboldfans", "activation": "Arena branding"}
+    {"name": "Smukfest", "values": "Nærvær, hygge, unikke oplevelser", "audience": "Musikfans, unge voksne", "activation": "Storytelling, sponsor lounges"},
+    {"name": "NorthSide", "values": "Bæredygtighed, innovation, moderne musik", "audience": "Miljøbevidste unge", "activation": "Bæredygtige samarbejder"},
+    
+    # Erhvervs- & bæredygtighedsrettigheder
+    {"name": "TechBBQ", "values": "Innovation, iværksætteri, netværk", "audience": "Startups, investorer", "activation": "Keynote branding, netværksevents"},
+    {"name": "Folkemødet", "values": "Demokrati, debat, engagement", "audience": "Politikere, NGO'er, erhvervsfolk", "activation": "Paneldebatter, partnerskaber"},
+    
+    # Esport & Gaming
+    {"name": "Blast Premier", "values": "Konkurrence, gaming, digital innovation", "audience": "Esportsfans, gamere", "activation": "Digitale sponsorater"},
+    {"name": "Astralis", "values": "High performance, mental styrke, gaming", "audience": "Gamere, unge mænd", "activation": "Merchandise, streaming-partnerskaber"}
 ]
+
 
 @app.route('/')
 def home():
