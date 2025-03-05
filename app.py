@@ -29,17 +29,12 @@ rights_database = [
 ]
 
 
-@app.route('/')
-def home():
-    return "Flask virker!"
-
 @app.route('/sponsorships', methods=['GET'])
 def get_sponsorships():
-    return app.response_class(
-        response=json.dumps(sponsorships, ensure_ascii=False),
-        status=200,
-        mimetype='application/json'
-    )
+    try:
+        return jsonify(rights_database)  # Flask's indbyggede JSON-metode
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Returnér detaljeret fejlhåndtering
 
 import os
 
