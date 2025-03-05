@@ -30,9 +30,35 @@ rights_database = [
     {"name": "Astralis", "values": "High performance, mental styrke, gaming", "audience": "Gamere, unge mænd", "activation": "Merchandise, streaming-partnerskaber"}
 ]
 
+# 🔹 **NY RUTE: Valider mail**
+@app.route("/validate_email", methods=["GET"])
+def validate_email():
+    user_email = request.args.get("email")
 
+    if not user_email:
+        return jsonify({"error": "Ingen mailadresse oplyst"}), 400  # Bad request
+
+    if "@" not in user_email:
+        return jsonify({"error": "Ugyldig mailadresse"}), 400  # Bad request
+
+    if user_email not in allowed_emails:
+        return jsonify({"error": "Adgang nægtet"}), 403  # Forbidden
+
+    return jsonify({"message": "Mail godkendt"}), 200  # OK
+
+# 🔹 **OPDATERET /sponsorships: Kræver godkendt mail**
 @app.route('/sponsorships', methods=['GET'])
 def get_sponsorships():
+    user_email = request.headers.get("X-User-Email")
+
+    # Tjek om mail er oplyst
+    if not user_email:
+        return jsonify({"error": "Ingen mailadresse oplyst"}), 400
+
+    # Tjek om mail er godkendt
+    if user_email not in allowed_emails:
+        return jsonify({"error": "Adgang nægtet"}), 403
+
     # Hent søgeparametre fra URL
     values_query = request.args.get("values")
     audience_query = request.args.get("audience")
@@ -50,7 +76,6 @@ def get_sponsorships():
 
     # Returnér filtrerede resultater
     return jsonify(filtered_sponsorships)
-
 
 import os
 
