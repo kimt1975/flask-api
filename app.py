@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request  # Tilføj 'request' her
 
 app = Flask(__name__)
 
+# Liste over tilladte mailadresser (tilføj flere efter behov)
+allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
+
 rights_database = [
     # Fodboldklubber
     {"name": "FC København", "values": "Tradition, konkurrence, internationalt udsyn", "audience": "Fodboldfans", "activation": "TV-eksponering"},
