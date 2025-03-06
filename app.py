@@ -25,40 +25,31 @@ RIGHTS_DATABASE = [
 ]
 
 # 🔹 **Valider e-mailadresse**
+import json
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# 🔹 Liste over tilladte mails (FLYTTET HEROP)
+allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
+
 @app.route("/validate_email", methods=["GET"])
 def validate_email():
     user_email = request.args.get("email")
 
     if not user_email:
-        response = {"error": "Ingen mailadresse oplyst"}
-        return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
-            status=400,
-            mimetype='application/json'
-        )
+        return jsonify({"error": "Ingen mailadresse oplyst"}), 400
 
     if "@" not in user_email:
-        response = {"error": "Ugyldig mailadresse"}
-        return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
-            status=400,
-            mimetype='application/json'
-        )
+        return jsonify({"error": "Ugyldig mailadresse"}), 400
 
-    if user_email not in allowed_emails:
-        response = {"error": "Adgang nægtet"}
-        return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
-            status=403,
-            mimetype='application/json'
-        )
+    if user_email not in allowed_emails:  # 🔹 FEJLEN VAR HER - 'allowed_emails' manglede
+        return jsonify({"error": "Adgang nægtet"}), 403
 
-    response = {"message": "Mail godkendt"}
-    return app.response_class(
-        response=json.dumps(response, ensure_ascii=False),
-        status=200,
-        mimetype='application/json'
-    )
+    return jsonify({"message": "Mail godkendt"}), 200
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 # 🔹 **Sponsorship søgning (kræver godkendt mail)**
 @app.route('/sponsorships', methods=['GET'])
