@@ -6,35 +6,40 @@ app = Flask(__name__)
 # Liste over tilladte mails
 allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
 
-@app.route('/validate_email', methods=['GET'])
+@app.route("/validate_email", methods=["GET"])
 def validate_email():
-    email = request.args.get("email")
-    
-    if not email:
+    user_email = request.args.get("email")
+
+    if not user_email:
         response = {"error": "Ingen mailadresse oplyst"}
         return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
+            response=json.dumps(response, ensure_ascii=False).encode('utf-8'),
             status=400,
             mimetype='application/json'
         )
 
-    if email in allowed_emails:
-        response = {"message": "Mail godkendt"}
+    if "@" not in user_email:
+        response = {"error": "Ugyldig mailadresse"}
         return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
-            status=200,
+            response=json.dumps(response, ensure_ascii=False).encode('utf-8'),
+            status=400,
             mimetype='application/json'
         )
-    else:
+
+    if user_email not in allowed_emails:
         response = {"error": "Adgang nægtet"}
         return app.response_class(
-            response=json.dumps(response, ensure_ascii=False),
+            response=json.dumps(response, ensure_ascii=False).encode('utf-8'),
             status=403,
             mimetype='application/json'
         )
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    response = {"message": "Mail godkendt"}
+    return app.response_class(
+        response=json.dumps(response, ensure_ascii=False).encode('utf-8'),
+        status=200,
+        mimetype='application/json'
+    )
 
 rights_database = [
     # Fodboldklubber
