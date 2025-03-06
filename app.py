@@ -30,16 +30,35 @@ def validate_email():
     user_email = request.args.get("email")
 
     if not user_email:
-        return jsonify({"error": "Ingen mailadresse oplyst"}), 400  # Bad Request
+        response = {"error": "Ingen mailadresse oplyst"}
+        return app.response_class(
+            response=json.dumps(response, ensure_ascii=False),
+            status=400,
+            mimetype='application/json'
+        )
 
     if "@" not in user_email:
-        return jsonify({"error": "Ugyldig mailadresse"}), 400  # Bad Request
+        response = {"error": "Ugyldig mailadresse"}
+        return app.response_class(
+            response=json.dumps(response, ensure_ascii=False),
+            status=400,
+            mimetype='application/json'
+        )
 
-    if user_email not in ALLOWED_EMAILS:
-        return jsonify({"error": "Adgang nægtet"}), 403  # Forbidden
+    if user_email not in allowed_emails:
+        response = {"error": "Adgang nægtet"}
+        return app.response_class(
+            response=json.dumps(response, ensure_ascii=False),
+            status=403,
+            mimetype='application/json'
+        )
 
-    return jsonify({"message": "Mail godkendt"}), 200  # OK
-
+    response = {"message": "Mail godkendt"}
+    return app.response_class(
+        response=json.dumps(response, ensure_ascii=False),
+        status=200,
+        mimetype='application/json'
+    )
 
 # 🔹 **Sponsorship søgning (kræver godkendt mail)**
 @app.route('/sponsorships', methods=['GET'])
