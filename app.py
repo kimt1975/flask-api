@@ -57,7 +57,7 @@ def get_sponsorships():
 
     # Tjek om mail er godkendt
     if user_email not in allowed_emails:
-        return jsonify({"error": "Adgang nægtet"}), 403
+        return jsonify({"error": "Adgang nægtet"}, ensure_ascii=False), 403
 
     # Hent søgeparametre fra URL
     values_query = request.args.get("values")
