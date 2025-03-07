@@ -53,7 +53,7 @@ def get_sponsorships():
                         continue
                 filtered_sponsorships.append(sponsor)
     
-    return jsonify(filtered_sponsorships), 200, {'Content-Type': 'application/json; charset=utf-8'}
+    return jsonify(filtered_sponsorships), 200, {"Content-Type": "application/json; charset=utf-8"}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
