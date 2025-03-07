@@ -4,85 +4,39 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# 🔹 **Liste over tilladte mails**
-ALLOWED_EMAILS = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
+# 🔹 Indlæs JSON-databasen ved opstart
+JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), "sponsorship_data.json")
 
-# 🔹 **Sponsor-database**
-RIGHTS_DATABASE = [
-    {"name": "FC København", "values": ["Tradition", "konkurrence", "internationalt udsyn"], "audience": ["Fodboldfans"], "activation": "TV-eksponering"},
-    {"name": "Brøndby IF", "values": ["Passion", "fællesskab", "dedikation"], "audience": ["Fodboldfans"], "activation": "Stadionbranding"},
-    {"name": "Aalborg BK", "values": ["Historie", "udvikling", "talentfokus"], "audience": ["Fodboldfans"], "activation": "Lokale sponsoraktiviteter"},
-    {"name": "FC Nordsjælland", "values": ["Innovation", "ungdomsudvikling", "bæredygtighed"], "audience": ["Unge", "familier"], "activation": "CSR-samarbejde"},
-    {"name": "Aalborg Håndbold", "values": ["Vindervilje", "konkurrence", "international ambition"], "audience": ["Håndboldfans"], "activation": "Arena branding"},
-    {"name": "GOG", "values": ["Ungdomsudvikling", "fællesskab", "engagement"], "audience": ["Børnefamilier", "lokale sportsfans"], "activation": "Lokale events"},
-    {"name": "Roskilde Festival", "values": ["Kreativitet", "fællesskab", "bæredygtighed"], "audience": ["Musikelskere"], "activation": "Live events"},
-    {"name": "Smukfest", "values": ["Nærvær", "hygge", "unikke oplevelser"], "audience": ["Musikfans", "unge voksne"], "activation": "Storytelling, sponsor lounges"},
-    {"name": "NorthSide", "values": ["Bæredygtighed", "innovation", "moderne musik"], "audience": ["Miljøbevidste unge"], "activation": "Bæredygtige samarbejder"},
-    {"name": "TechBBQ", "values": ["Innovation", "iværksætteri", "netværk"], "audience": ["Startups", "investorer"], "activation": "Keynote branding, netværksevents"},
-    {"name": "Folkemødet", "values": ["Demokrati", "debat", "engagement"], "audience": ["Politikere", "NGO'er", "erhvervsfolk"], "activation": "Paneldebatter, partnerskaber"},
-    {"name": "Blast Premier", "values": ["Konkurrence", "gaming", "digital innovation"], "audience": ["Esportsfans", "gamere"], "activation": "Digitale sponsorater"},
-    {"name": "Astralis", "values": ["High performance", "mental styrke", "gaming"], "audience": ["Gamere", "unge mænd"], "activation": "Merchandise, streaming-partnerskaber"}
-]
+with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
+    rights_database = json.load(f)
 
-# 🔹 **Valider e-mailadresse**
-import json
-from flask import Flask, jsonify, request
-
-app = Flask(__name__)
-
-# 🔹 Liste over tilladte mails (FLYTTET HEROP)
+# Liste over tilladte e-mails
 allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
 
-@app.route("/validate_email", methods=["GET"])
-def validate_email():
-    user_email = request.args.get("email")
-
-    if not user_email:
-        return jsonify({"error": "Ingen mailadresse oplyst"}), 400
-
-    if "@" not in user_email:
-        return jsonify({"error": "Ugyldig mailadresse"}), 400
-
-    if user_email not in allowed_emails:  # 🔹 FEJLEN VAR HER - 'allowed_emails' manglede
-        return jsonify({"error": "Adgang nægtet"}), 403
-
-    return jsonify({"message": "Mail godkendt"}), 200
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
-# 🔹 **Sponsorship søgning (kræver godkendt mail)**
-@app.route('/sponsorships', methods=['GET'])
+@app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
+    """Filtrerer sponsorater baseret på kategori, underkategori og specifik parameter."""
     user_email = request.headers.get("X-User-Email")
 
-    # 🔸 **Tjek om mail er oplyst**
-    if not user_email:
-        return jsonify({"error": "Ingen mailadresse oplyst"}), 400
-
-    # 🔸 **Tjek om mail er godkendt**
-    if user_email not in ALLOWED_EMAILS:
+    # 🔹 Valider e-mail
+    if not user_email or user_email not in allowed_emails:
         return jsonify({"error": "Adgang nægtet"}), 403
 
-    # 🔹 **Hent søgeparametre fra URL**
-    values_query = request.args.get("values")
-    audience_query = request.args.get("audience")
+    # 🔹 Hent søgeparametre
+    category = request.args.get("category")
+    subcategory = request.args.get("subcategory")
+    filter_param = request.args.get("filter_param")  # fx "målgruppe"
+    filter_value = request.args.get("filter_value")  # fx "unge"
 
-    # 🔹 **Konverter til liste, hvis der er flere værdier**
-    values_filter = values_query.split(",") if values_query else []
-    audience_filter = audience_query.split(",") if audience_query else []
-
-    # 🔹 **Filtrer databasen efter værdier og målgruppe**
+    # 🔹 Filtrering af data
     filtered_sponsorships = [
-        sponsorship for sponsorship in RIGHTS_DATABASE
-        if (not values_filter or any(value in sponsorship["values"] for value in values_filter))
-        and (not audience_filter or any(aud in sponsorship["audience"] for aud in audience_filter))
+        s for s in rights_database
+        if (not category or s.get("category") == category) and
+           (not subcategory or s.get("subcategory") == subcategory) and
+           (not filter_param or filter_value.lower() in s.get(filter_param, "").lower())
     ]
 
     return jsonify(filtered_sponsorships)
 
-
-# 🔹 **Kør Flask-serveren**
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Brug Render's port, ellers 5000
-    app.run(host="0.0.0.0", port=port, debug=True)  # Lyt på alle netværk
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
