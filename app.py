@@ -48,7 +48,7 @@ def get_sponsorships():
                     if isinstance(value, str) and filter_value.lower() not in value.lower():
                         continue
                 filtered_sponsorships.append(sponsor)
-
+    
     return jsonify(filtered_sponsorships), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 if __name__ == "__main__":
