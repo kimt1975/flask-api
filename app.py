@@ -13,6 +13,10 @@ with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
 # Liste over tilladte e-mails
 allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
 
+@app.before_request
+def log_request_info():
+    print("Modtaget headers:", request.headers)
+
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
     """Filtrerer sponsorater baseret på kategori, underkategori og specifikke parametre."""
