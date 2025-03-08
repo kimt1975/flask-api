@@ -20,7 +20,7 @@ def log_request_info():
 # 🔹 Valider e-mail
 @app.route("/sponsorships", methods=["GET", "POST"])
 def get_sponsorships():
-    user_email = request.headers.get("X-User-Email")
+    user_email = request.headers.get("X-User-Email") or request.args.get("email")
 
     if not user_email or user_email not in allowed_emails:
         return jsonify({
