@@ -17,11 +17,6 @@ allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.
 def log_request_info():
     print("Modtaget headers:", dict(request.headers))  # Viser headers som et læsbart dictionary
 
-@app.route("/sponsorships", methods=["GET", "POST"])
-def get_sponsorships():
-    """Filtrerer sponsorater baseret på kategori, underkategori og specifikke parametre."""
-    user_email = request.headers.get("X-User-Email")
-
 # 🔹 Valider e-mail
 @app.route("/sponsorships", methods=["GET", "POST"])
 def get_sponsorships():
