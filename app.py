@@ -24,7 +24,7 @@ def get_sponsorships():
 
     # 🔹 Valider e-mail
     if not user_email or user_email not in allowed_emails:
-        return jsonify({"error": "Adgang nægtet"}), 403
+        return jsonify({"status": "failed", "message": "Den indtastede mailadresse er ikke godkendt"}), 403
 
     # 🔹 Hent søgeparametre
     category = request.args.get("category")
