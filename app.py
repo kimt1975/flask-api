@@ -15,16 +15,20 @@ allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.
 
 @app.before_request
 def log_request_info():
-    print("Modtaget headers:", request.headers)
+    print("Modtaget headers:", dict(request.headers))  # Viser headers som et læsbart dictionary
 
-@app.route("/sponsorships", methods=["GET"])
+@app@app.route("/sponsorships", methods=["GET", "POST"])
 def get_sponsorships():
     """Filtrerer sponsorater baseret på kategori, underkategori og specifikke parametre."""
     user_email = request.headers.get("X-User-Email")
 
     # 🔹 Valider e-mail
-    if not user_email or user_email not in allowed_emails:
-        return jsonify({"status": "failed", "message": "Den indtastede mailadresse er ikke godkendt"}), 403
+   if not user_email or user_email not in allowed_emails:
+    return jsonify({
+        "status": "error",
+        "error_code": "EMAIL_NOT_AUTHORIZED",
+        "message": "Den indtastede mailadresse er ikke godkendt."
+    }), 403
 
     # 🔹 Hent søgeparametre
     category = request.args.get("category")
