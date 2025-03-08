@@ -22,13 +22,17 @@ def get_sponsorships():
     """Filtrerer sponsorater baseret på kategori, underkategori og specifikke parametre."""
     user_email = request.headers.get("X-User-Email")
 
-    # 🔹 Valider e-mail
-   if not user_email or user_email not in allowed_emails:
-    return jsonify({
-        "status": "error",
-        "error_code": "EMAIL_NOT_AUTHORIZED",
-        "message": "Den indtastede mailadresse er ikke godkendt."
-    }), 403
+# 🔹 Valider e-mail
+@app.route("/sponsorships", methods=["GET", "POST"])
+def get_sponsorships():
+    user_email = request.headers.get("X-User-Email")
+
+    if not user_email or user_email not in allowed_emails:
+        return jsonify({
+            "status": "error",
+            "error_code": "EMAIL_NOT_AUTHORIZED",
+            "message": "Den indtastede mailadresse er ikke godkendt."
+        }), 403
 
     # 🔹 Hent søgeparametre
     category = request.args.get("category")
