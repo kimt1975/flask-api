@@ -44,8 +44,8 @@ def get_categories():
 # 🔹 Hovedendpoint til at hente sponsor-data
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    selected_values = [BRAND_VALUES[int(v) - 1] for v in request.args.getlist("brand_values") if v.isdigit()]
-    selected_categories = [CATEGORIES[int(c) - 1] for c in request.args.getlist("categories") if c.isdigit()]
+    selected_values = request.args.getlist("brand_values")
+    selected_categories = request.args.getlist("categories")
 
     if not selected_values:
         return jsonify({"Fejl": "Vælg venligst 3-5 brandværdier."}), 400
@@ -57,7 +57,7 @@ def get_sponsorships():
         brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         category = sponsor.get("Kategori")
 
-        # Nyt: Kun ét match kræves
+        # 🔥 NYT: Kun ét match kræves for at inkludere sponsoratet
         if any(value in brand_values for value in selected_values) and category in selected_categories:
             filtered_sponsorships.append({
                 "Navn": sponsor.get("Navn"),
@@ -74,6 +74,7 @@ def get_sponsorships():
         }), 404
 
     return jsonify(filtered_sponsorships), 200, {"Content-Type": "application/json; charset=utf-8"}
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
