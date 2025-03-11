@@ -46,15 +46,21 @@ def matches_filter(sponsor, filter_param, filter_value):
 # 🔹 Hovedendpoint til at hente sponsor-data
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    category = request.args.get("category")
-    filter_param = request.args.get("filter_param")  # fx "Aldersgruppe"
-    filter_value = request.args.get("filter_value")  # fx "18-60"
+    selected_values = request.args.getlist("brand_values")  # Hent værdier som liste
+    filtered_sponsorships = []
 
-    filtered_sponsorships = [
-        sponsor for sponsor in sponsorship_data
-        if (not category or sponsor.get("Kategori") == category)
-        and matches_filter(sponsor, filter_param, filter_value)
-    ]
+    for sponsor in sponsorship_data:
+        brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
+        
+        # Tjek om nogle af de valgte værdier matcher
+        if any(value in brand_values for value in selected_values):
+            filtered_sponsorships.append({
+                "Navn": sponsor.get("Navn"),
+                "Tilskuere i snit": sponsor.get("Tilskuere i snit"),
+                "Aldersgruppe": sponsor.get("Aldersgruppe"),
+                "Brandværdier": sponsor.get("Brandværdier"),
+                "Kommentarer": sponsor.get("Kommentarer")
+            })
 
     return jsonify(filtered_sponsorships), 200, {"Content-Type": "application/json; charset=utf-8"}
 
