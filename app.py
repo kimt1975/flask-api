@@ -25,7 +25,6 @@ def log_request_info():
 def get_values():
     unique_values = set()
     
-    # Gennemgå hver sponsor og tilføj værdier fra 'Brandværdier'
     for sponsor in sponsorship_data:
         brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         unique_values.update(brand_values)
@@ -46,14 +45,20 @@ def matches_filter(sponsor, filter_param, filter_value):
 # 🔹 Hovedendpoint til at hente sponsor-data
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    selected_values = request.args.getlist("brand_values")  # Hent værdier som liste
-    filtered_sponsorships = []
+    selected_values = request.args.getlist("brand_values")
+    selected_categories = request.args.getlist("categories")
 
+    if not selected_values:
+        return jsonify({"Fejl": "Vælg venligst 3-5 brandværdier."}), 400
+    if not selected_categories:
+        return jsonify({"Fejl": "Vælg venligst 1-3 kategorier."}), 400
+
+    filtered_sponsorships = []
     for sponsor in sponsorship_data:
         brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
-        
-        # Tjek om nogle af de valgte værdier matcher
-        if any(value in brand_values for value in selected_values):
+        category = sponsor.get("Kategori")
+
+        if any(value in brand_values for value in selected_values) and category in selected_categories:
             filtered_sponsorships.append({
                 "Navn": sponsor.get("Navn"),
                 "Tilskuere i snit": sponsor.get("Tilskuere i snit"),
@@ -61,6 +66,12 @@ def get_sponsorships():
                 "Brandværdier": sponsor.get("Brandværdier"),
                 "Kommentarer": sponsor.get("Kommentarer")
             })
+
+    if not filtered_sponsorships:
+        return jsonify({
+            "Besked": "Ingen resultater fundet. Prøv at vælge andre værdier eller kategorier.",
+            "Tips": "Overvej at vælge bredere værdier eller flere kategorier for bedre resultater."
+        }), 404
 
     return jsonify(filtered_sponsorships), 200, {"Content-Type": "application/json; charset=utf-8"}
 
