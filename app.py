@@ -20,6 +20,19 @@ def log_request_info():
     print(f"Headers: {dict(request.headers)}")
     print(f"Query-parametre: {request.args}")
 
+# 🔹 Endpoint til at hente unikke værdier fra JSON-filen
+@app.route("/values", methods=["GET"])
+def get_values():
+    unique_values = set()
+    
+    # Gennemgå hver sponsor og tilføj værdier
+    for sponsor in sponsorship_data:
+        for key, value in sponsor.items():
+            if isinstance(value, str) and len(value) < 50:  # Begrænser lange tekstfelter
+                unique_values.add(value)
+    
+    return jsonify(sorted(list(unique_values))), 200, {"Content-Type": "application/json; charset=utf-8"}
+
 # 🔹 Hjælpefunktion til filtrering
 def matches_filter(sponsor, filter_param, filter_value):
     if not filter_param or not filter_value:
