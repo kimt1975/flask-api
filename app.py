@@ -27,7 +27,7 @@ def get_values():
     
     # Gennemgå hver sponsor og tilføj værdier fra 'Brandværdier'
     for sponsor in sponsorship_data:
-        brand_values = sponsor.get("Brandværdier", "").split(", ")  # Antager kommaseparerede værdier
+        brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         unique_values.update(brand_values)
     
     return jsonify(sorted(list(unique_values))), 200, {"Content-Type": "application/json; charset=utf-8"}
