@@ -4,58 +4,46 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# 🔹 Indlæs JSON-databasen ved opstart
+# 🔹 Indlæs JSON-data med fejlhåndtering
 JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), "sponsorship_data.json")
+try:
+    with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
+        sponsorship_data = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"Fejl ved indlæsning af JSON-fil: {e}")
+    sponsorship_data = []
 
-with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
-    sponsorship_data = json.load(f)
-
-# Liste over tilladte e-mails
-allowed_emails = {"kim.traulsen@gmail.com", "bruger@firma.dk", "dinmail@domæne.dk"}
-
+# 🔹 Forbedret logning
 @app.before_request
 def log_request_info():
-    print("Modtaget headers:", dict(request.headers))  # Viser headers som et læsbart dictionary
+    print(f"🔍 Forespørgsel modtaget: {request.method} {request.path}")
+    print(f"Headers: {dict(request.headers)}")
+    print(f"Query-parametre: {request.args}")
 
-# 🔹 Valider e-mail
-@app.route("/sponsorships", methods=["GET", "POST"])
+# 🔹 Hjælpefunktion til filtrering
+def matches_filter(sponsor, filter_param, filter_value):
+    if not filter_param or not filter_value:
+        return True
+    value = sponsor
+    for level in filter_param.split("."):
+        value = value.get(level, "")
+        if not value:
+            return False
+    return filter_value.lower() in str(value).lower()
+
+# 🔹 Hovedendpoint til at hente sponsor-data
+@app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    user_email = request.headers.get("X-User-Email") or request.args.get("email")
-
-    if not user_email or user_email not in allowed_emails:
-        return jsonify({
-            "status": "error",
-            "error_code": "EMAIL_NOT_AUTHORIZED",
-            "message": "Den indtastede mailadresse er ikke godkendt."
-        }), 403
-
-    # 🔹 Hent søgeparametre
     category = request.args.get("category")
-    subcategory = request.args.get("subcategory")
-    filter_param = request.args.get("filter_param")  # fx "target_audience.age_range"
-    filter_value = request.args.get("filter_value")  # fx "20-40 år"
+    filter_param = request.args.get("filter_param")  # fx "Aldersgruppe"
+    filter_value = request.args.get("filter_value")  # fx "18-60"
 
-    filtered_sponsorships = []
+    filtered_sponsorships = [
+        sponsor for sponsor in sponsorship_data
+        if (not category or sponsor.get("Kategori") == category)
+        and matches_filter(sponsor, filter_param, filter_value)
+    ]
 
-    # 🔹 Filtrering af data
-    for cat_key, subcats in sponsorship_data.items():
-        if category and cat_key != category:
-            continue
-        for subcat_key, sponsors in subcats.items():
-            if subcategory and subcat_key != subcategory:
-                continue
-            for sponsor in sponsors:
-                if filter_param and filter_value:
-                    param_levels = filter_param.split(".")
-                    value = sponsor
-                    for level in param_levels:
-                        value = value.get(level, "")
-                        if not value:
-                            break
-                    if isinstance(value, str) and filter_value.lower() not in value.lower():
-                        continue
-                filtered_sponsorships.append(sponsor)
-    
     return jsonify(filtered_sponsorships), 200, {"Content-Type": "application/json; charset=utf-8"}
 
 if __name__ == "__main__":
