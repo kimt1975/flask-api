@@ -1,0 +1,210 @@
+{
+    "football": {
+        "superliga_men": [
+            {
+                "name": "FC Midtjylland",
+                "engagement": {
+                    "social_media": {
+                        "tiktok": 1000000,
+                        "facebook": 323000,
+                        "instagram": 322000,
+                        "twitter": 52000,
+                        "youtube": 26000
+                    },
+                    "average_attendance": 8507
+                },
+                "exposure": {
+                    "tv_exposure": "Viaplay/TV3, 100k+ per topkamp",
+                    "digital_exposure": "Stor international interesse via stjernespillere (fx Egypten, Sydkorea)"
+                },
+                "target_audience": {
+                    "age_range": "20-50 år",
+                    "demographics": "Primært mænd, stærk regional opbakning",
+                    "geographic_reach": "National + international (pga. stjernespillere)"
+                },
+                "sponsorship_history": {
+                    "current": [
+                        "Arbejdernes Landsbank",
+                        "Carlsberg"
+                    ],
+                    "previous": [
+                        "EnergiMidt"
+                    ],
+                    "activations": [
+                        "'Ulvene' branding",
+                        "Digitale fan-konkurrencer"
+                    ]
+                },
+                "activation_options": [
+                    "Trøjesponsorat",
+                    "LED-bander",
+                    "VIP hospitality",
+                    "Spiller-events"
+                ]
+            },
+            {
+                "name": "FC København",
+                "engagement": {
+                    "social_media": {
+                        "tiktok": 320000,
+                        "facebook": 304000,
+                        "instagram": 393000,
+                        "twitter": 117000
+                    },
+                    "average_attendance": 17774
+                },
+                "exposure": {
+                    "tv_exposure": "Højeste seertal i Superligaen, national eksponering via TV3+, Viaplay",
+                    "digital_exposure": "Stor SoMe rækkevidde, millioner af CL-visninger"
+                },
+                "target_audience": {
+                    "age_range": "Blandet, primært 20-40 år",
+                    "demographics": "54% mænd, 46% kvinder",
+                    "geographic_reach": "National og international (via Champions League)"
+                },
+                "sponsorship_history": {
+                    "current": [
+                        "Carlsberg",
+                        "Arbejdernes Landsbank"
+                    ],
+                    "previous": [
+                        "Telco 3",
+                        "UNIBET"
+                    ],
+                    "activations": [
+                        "Carlsberg Man of the Match",
+                        "Internationale træningslejre"
+                    ]
+                },
+                "activation_options": [
+                    "Stadionsponsorater",
+                    "Spiller branding",
+                    "Internationale træningslejre"
+                ]
+            }
+        ]
+    },
+    "handball": {
+        "liga_men": [
+            {
+                "name": "Aalborg Håndbold",
+                "engagement": {
+                    "social_media": {
+                        "total_followers": 50000
+                    },
+                    "average_attendance": 5058
+                },
+                "exposure": {
+                    "tv_exposure": "Champions League-kampe kan nå 200-300k seere på TV2",
+                    "digital_exposure": "Stor digital eksponering via CL-streaming, høj SoMe-interaktion"
+                },
+                "target_audience": {
+                    "age_range": "Bredt, primært 25-50 år",
+                    "demographics": "Familier, ældre loyale fans",
+                    "geographic_reach": "Nordjylland, men national interesse pga. CL-succes"
+                },
+                "sponsorship_history": {
+                    "current": [
+                        "Sparekassen Danmark",
+                        "Hummel"
+                    ],
+                    "previous": [
+                        "Spar Nord",
+                        "Qatar Airways"
+                    ],
+                    "activations": [
+                        "Mikkel Hansen som frontfigur",
+                        "Sponsor-fanzone"
+                    ]
+                },
+                "activation_options": [
+                    "Hospitality",
+                    "Spiller branding",
+                    "Sponsorerede events"
+                ]
+            }
+        ]
+    },
+    "festivals": {
+        "top_10": [
+            {
+                "name": "Roskilde Festival",
+                "engagement": {
+                    "social_media": {
+                        "total_followers": 130000
+                    },
+                    "average_attendance": 130000
+                },
+                "exposure": {
+                    "tv_exposure": "men massiv mediedækning fra DR, TV2",
+                    "digital_exposure": "Streamet globalt via YouTube, stor organisk SoMe-trafik"
+                },
+                "target_audience": {
+                    "age_range": "18-30 primært, men også ældre segmenter",
+                    "demographics": "55% mænd, 45% kvinder",
+                    "geographic_reach": "International"
+                },
+                "sponsorship_history": {
+                    "current": [
+                        "Tuborg",
+                        "Spotify",
+                        "Andel"
+                    ],
+                    "previous": [
+                        "Orange Telecom"
+                    ],
+                    "activations": [
+                        "Tuborg Recharge Station",
+                        "VIP Camp",
+                        "Brand-partnerskaber"
+                    ]
+                },
+                "activation_options": [
+                    "Brand-zoner",
+                    "Hospitality",
+                    "Digitale kampagner"
+                ]
+            }
+        ]
+    },
+    "music_artists": {
+        "top_10": [
+            {
+                "name": "Lukas Graham",
+                "engagement": {
+                    "social_media": {
+                        "total_followers": 1000000
+                    },
+                    "average_attendance": 0
+                },
+                "exposure": {
+                    "tv_exposure": "Hyppigt på DK TV, Jimmy Kimmel Live, internationale prisuddelinger",
+                    "digital_exposure": "Høj YouTube-visninger, global viralitet"
+                },
+                "target_audience": {
+                    "age_range": "20-40 år",
+                    "demographics": "Bred mainstream appeal",
+                    "geographic_reach": "Global, primært USA og Europa"
+                },
+                "sponsorship_history": {
+                    "current": [
+                        "Warner Music",
+                        "Carlsberg"
+                    ],
+                    "previous": [
+                        "Netflix (musikkampagne)"
+                    ],
+                    "activations": [
+                        "Netflix-musikpromotion",
+                        "Carlsberg Byen event"
+                    ]
+                },
+                "activation_options": [
+                    "Brand-partnerede musikvideoer",
+                    "Turnésponsorater",
+                    "Fan-events"
+                ]
+            }
+        ]
+    }
+}
