@@ -42,36 +42,39 @@ def convert_numbers_to_values(selected_numbers, value_list):
 # 🔹 Hovedendpoint til at hente sponsor-data
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    brand_value_options = ["Ambitiøs", "Innovativ", "Familievenlig", "Historisk", "Lokal", "Energisk", "Passioneret", "Professionel", "Rå", "Skæv", "Soulful"]
-    category_options = ["Herrefodbold", "Kvindefodbold", "Herrehåndbold", "Kvindehåndbold", "Musik", "Festivaler"]
+    brand_value_options = [
+        "Ambitiøs", "Innovativ", "Familievenlig", "Historisk", 
+        "Lokal", "Energisk", "Passioneret", "Professionel",
+        "Rå", "Skæv", "Soulful"
+    ]
 
-    selected_values = convert_numbers_to_values(request.args.getlist("brand_values"), brand_value_options)
-    selected_categories = convert_numbers_to_values(request.args.getlist("categories"), category_options)
+    # 🔹 Frit valg af værdier
+    selected_values = request.args.getlist("brand_values")
+    selected_categories = request.args.getlist("categories")
+
+    # 🔹 Konverter numeriske valg til tekst
+    selected_values = [
+        brand_value_options[int(num) - 1] if num.isdigit() and 1 <= int(num) <= len(brand_value_options) 
+        else num.strip()  # Frit indtastede værdier accepteres direkte
+        for num in selected_values
+    ]
 
     print("👉 Valgte brandværdier:", selected_values)
     print("👉 Valgte kategorier:", selected_categories)
-    print("👉 Data fra JSON-filen:")
-    for sponsor in sponsorship_data:
-        print(f"{sponsor['Navn']}: {sponsor['Brandværdier']} | {sponsor['Kategori']}")
-
-    if not selected_values:
-        return jsonify({"Fejl": "Vælg venligst 3-5 brandværdier."}), 400
-    if not selected_categories:
-        return jsonify({"Fejl": "Vælg venligst 1-3 kategorier."}), 400
-
+    
     filtered_sponsorships = []
     for sponsor in sponsorship_data:
         brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         category = sponsor.get("Kategori")
 
-        # Nyt: Kun ét match kræves
         if any(value in brand_values for value in selected_values) and category in selected_categories:
             filtered_sponsorships.append({
                 "Navn": sponsor.get("Navn"),
                 "Tilskuere i snit": sponsor.get("Tilskuere i snit"),
                 "Aldersgruppe": sponsor.get("Aldersgruppe"),
                 "Brandværdier": sponsor.get("Brandværdier"),
-                "Kommentarer": sponsor.get("Kommentarer")
+                "Kommentarer": sponsor.get("Kommentarer"),
+                "Aktiveringsmuligheder": sponsor.get("Aktiveringsmuligheder")
             })
 
     if not filtered_sponsorships:
