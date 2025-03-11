@@ -39,6 +39,10 @@ def get_sponsorships():
 
     print("👉 Valgte brandværdier:", selected_values)
     print("👉 Valgte kategorier:", selected_categories)
+    print("👉 Data fra JSON-filen:")
+
+    for sponsor in sponsorship_data:
+        print(f"{sponsor['Navn']}: {sponsor['Brandværdier']} | {sponsor['Kategori']}")
 
     filtered_sponsorships = []
     for sponsor in sponsorship_data:
