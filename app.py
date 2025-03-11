@@ -20,16 +20,15 @@ def log_request_info():
     print(f"Headers: {dict(request.headers)}")
     print(f"Query-parametre: {request.args}")
 
-# 🔹 Endpoint til at hente unikke værdier fra JSON-filen
+# 🔹 Endpoint til at hente unikke værdier fra kolonnen 'Brandværdier'
 @app.route("/values", methods=["GET"])
 def get_values():
     unique_values = set()
     
-    # Gennemgå hver sponsor og tilføj værdier
+    # Gennemgå hver sponsor og tilføj værdier fra 'Brandværdier'
     for sponsor in sponsorship_data:
-        for key, value in sponsor.items():
-            if isinstance(value, str) and len(value) < 50:  # Begrænser lange tekstfelter
-                unique_values.add(value)
+        brand_values = sponsor.get("Brandværdier", "").split(", ")  # Antager kommaseparerede værdier
+        unique_values.update(brand_values)
     
     return jsonify(sorted(list(unique_values))), 200, {"Content-Type": "application/json; charset=utf-8"}
 
