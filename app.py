@@ -20,33 +20,32 @@ def log_request_info():
     print(f"Headers: {dict(request.headers)}")
     print(f"Query-parametre: {request.args}")
 
+# 🔹 Liste over brandværdier og kategorier som brugeren kan vælge via tal
+BRAND_VALUES = [
+    "Ambitiøs", "Innovativ", "Familievenlig", "Historisk", "Lokal",
+    "Energisk", "Passioneret", "Professionel", "Rå", "Skæv", "Soulful"
+]
+
+CATEGORIES = [
+    "Herrefodbold", "Kvindefodbold", "Herrehåndbold",
+    "Kvindehåndbold", "Musik", "Festivaler"
+]
+
 # 🔹 Endpoint til at hente unikke værdier fra kolonnen 'Brandværdier'
 @app.route("/values", methods=["GET"])
 def get_values():
-    unique_values = set()
-    
-    for sponsor in sponsorship_data:
-        brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
-        unique_values.update(brand_values)
-    
-    return jsonify(sorted(list(unique_values))), 200, {"Content-Type": "application/json; charset=utf-8"}
+    return jsonify(BRAND_VALUES), 200, {"Content-Type": "application/json; charset=utf-8"}
 
-# 🔹 Hjælpefunktion til filtrering
-def matches_filter(sponsor, filter_param, filter_value):
-    if not filter_param or not filter_value:
-        return True
-    value = sponsor
-    for level in filter_param.split("."):
-        value = value.get(level, "")
-        if not value:
-            return False
-    return filter_value.lower() in str(value).lower()
+# 🔹 Endpoint til at hente unikke kategorier
+@app.route("/categories", methods=["GET"])
+def get_categories():
+    return jsonify(CATEGORIES), 200, {"Content-Type": "application/json; charset=utf-8"}
 
 # 🔹 Hovedendpoint til at hente sponsor-data
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
-    selected_values = request.args.getlist("brand_values")
-    selected_categories = request.args.getlist("categories")
+    selected_values = [BRAND_VALUES[int(v) - 1] for v in request.args.getlist("brand_values") if v.isdigit()]
+    selected_categories = [CATEGORIES[int(c) - 1] for c in request.args.getlist("categories") if c.isdigit()]
 
     if not selected_values:
         return jsonify({"Fejl": "Vælg venligst 3-5 brandværdier."}), 400
@@ -58,6 +57,7 @@ def get_sponsorships():
         brand_values = [v.strip() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         category = sponsor.get("Kategori")
 
+        # Nyt: Kun ét match kræves
         if any(value in brand_values for value in selected_values) and category in selected_categories:
             filtered_sponsorships.append({
                 "Navn": sponsor.get("Navn"),
