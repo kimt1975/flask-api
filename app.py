@@ -35,16 +35,17 @@ def get_values():
 @app.route("/sponsorships", methods=["GET"])
 def get_sponsorships():
     selected_values = [v.strip().lower() for v in request.args.getlist("brand_values")]
-    category_map = {
-    "1": "herrefodbold",
-    "2": "kvindefodbold",
-    "3": "herrehåndbold",
-    "4": "kvindehåndbold",
-    "5": "musik",
-    "6": "festivaler"
-}
 
-selected_categories = [category_map.get(v.strip(), "").strip().lower() for v in request.args.getlist("categories") if category_map.get(v.strip())]
+    category_map = {
+        "1": "herrefodbold",
+        "2": "kvindefodbold",
+        "3": "herrehåndbold",
+        "4": "kvindehåndbold",
+        "5": "musik",
+        "6": "festivaler"
+    }
+
+    selected_categories = [category_map.get(v.strip(), "").strip().lower() for v in request.args.getlist("categories") if category_map.get(v.strip())]
 
     print("👉 Valgte brandværdier:", selected_values)
     print("👉 Valgte kategorier:", selected_categories)
@@ -58,7 +59,6 @@ selected_categories = [category_map.get(v.strip(), "").strip().lower() for v in 
         brand_values = [v.strip().lower() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         category = sponsor.get("Kategori", "").strip().lower()
 
-        # 🔥 Logning til fejlsøgning af kategorier
         print(f"👉 Kontrol: Kategori i JSON: '{category}', Valgte kategorier: {selected_categories}")
 
         # 🔥 Kun ét match kræves
@@ -69,7 +69,7 @@ selected_categories = [category_map.get(v.strip(), "").strip().lower() for v in 
                 "Aldersgruppe": sponsor.get("Aldersgruppe"),
                 "Brandværdier": sponsor.get("Brandværdier"),
                 "Kommentarer": sponsor.get("Kommentarer"),
-                "Aktiveringsmuligheder": sponsor.get("Aktiveringsmuligheder")
+                "Aktiveringsmuligheder": sponsor.get("Aktiveringsmuligheder", "Ikke angivet")
             })
 
     if not filtered_sponsorships:
