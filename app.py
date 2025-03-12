@@ -49,7 +49,8 @@ def get_sponsorships():
         brand_values = [v.strip().lower() for v in sponsor.get("Brandværdier", "").replace(";", ",").split(",")]
         category = sponsor.get("Kategori", "").strip().lower()
 
-        print(f"👉 Kontrol: Kategori i JSON: {category}, Valgte kategorier: {selected_categories}")  # Log kategori-tjek
+        # 🔥 Logning til fejlsøgning af kategorier
+        print(f"👉 Kontrol: Kategori i JSON: '{category}', Valgte kategorier: {selected_categories}")
 
         # 🔥 Kun ét match kræves
         if any(value in brand_values for value in selected_values) and category in selected_categories:
