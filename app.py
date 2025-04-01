@@ -42,7 +42,7 @@ def get_sponsorships():
         "3": "herrehåndbold",
         "4": "kvindehåndbold",
         "5": "musik",
-        "6": "festivaler"
+        "6": "festival"
     }
 
     selected_categories = [category_map.get(v.strip(), "").strip().lower() for v in request.args.getlist("categories") if category_map.get(v.strip())]
